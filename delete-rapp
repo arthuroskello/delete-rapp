@@ -19,5 +19,5 @@ RAPP_TO_DELETE=$(echo "$BRANCHES" | fzf)
 echo "Deleting rapp $RAPP_TO_DELETE..."
 curl -s -X DELETE --location "https://status.reviewapps.skello.io/review-apps/skelloApp/$RAPP_TO_DELETE" \
     -H "Accept: application/json" \
-    -H "X-Source-Client: arthur.massanes@skello.io" \
+    -H "X-Source-Client: $EMAIL" \
     -H "X-Api-Key: $RAPP_API_KEY" && echo "Done."
