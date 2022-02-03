@@ -1,0 +1,23 @@
+#! /bin/sh
+
+# no api key no chocolat
+if [ -z "${RAPP_API_KEY}" ]; then
+    echo "Please set the \$RAPP_API_KEY to use this script"
+    exit
+# prompt for email if env var is not set
+elif [ -z "${EMAIL}" ]; then
+    echo "What is your email? "
+    read EMAIL
+fi
+
+# get list of branches that have an active rapp
+BRANCHES=$(curl -s -X 'GET' 'https://status.reviewapps.skello.io/review-apps' -H 'accept: application/json' -H "X-Source-Client: $EMAIL" -H "X-Api-Key: $RAPP_API_KEY" | jq -r ".[].branchName")
+
+echo "Which review app do you wish to delete? "
+RAPP_TO_DELETE=$(echo "$BRANCHES" | fzf)
+
+echo "Deleting rapp $RAPP_TO_DELETE..."
+curl -s -X DELETE --location "https://status.reviewapps.skello.io/review-apps/skelloApp/$RAPP_TO_DELETE" \
+    -H "Accept: application/json" \
+    -H "X-Source-Client: arthur.massanes@skello.io" \
+    -H "X-Api-Key: $RAPP_API_KEY" && echo "Done."
